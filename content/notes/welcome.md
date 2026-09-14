@@ -1,9 +1,9 @@
 ---
-title: Hello, Welcome
-description: An introduction to using the note feature in Astro Cactus
+title: Hello, World!
+description: First note — welcome to Dat's Blog
 publishDate: "2024-10-14T11:23:00Z"
 ---
 
-Hi, Hello. This is an example note feature included with Astro Cactus 🌵
+Hey! Welcome to my blog 👋
 
-They're for shorter, more concise posts that you'd like to share. They generally don't include headings, but hey, it's entirely up to you!
+This is where I take notes on things I learn and explore. Short thoughts, quick tips, and random stuff — just for note.
