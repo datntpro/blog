@@ -1,0 +1,111 @@
+---
+/**
+ * AI Summary button — calls /api/summarize (Cloudflare Workers AI)
+ * to generate a summary of the blog post content.
+ */
+---
+
+<ai-summary>
+	<div class="mt-8 mb-4 border border-muted/30 rounded-lg overflow-hidden">
+		<button
+			class="flex w-full cursor-pointer items-center gap-2 px-4 py-3 text-sm font-semibold transition-colors hover:bg-accent/10"
+			id="ai-summary-btn"
+			type="button"
+		>
+			<svg
+				aria-hidden="true"
+				class="h-5 w-5 text-accent"
+				fill="none"
+				stroke="currentColor"
+				stroke-width="2"
+				viewBox="0 0 24 24"
+				xmlns="http://www.w3.org/2000/svg"
+			>
+				<path
+					d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.455 2.456L21.75 6l-1.036.259a3.375 3.375 0 00-2.455 2.456zM16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 001.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 001.423 1.423l1.183.394-1.183.394a2.25 2.25 0 00-1.423 1.423z"
+					stroke-linecap="round"
+					stroke-linejoin="round"
+				></path>
+			</svg>
+			<span id="ai-summary-label">Tóm tắt bằng AI</span>
+			<svg
+				aria-hidden="true"
+				class="ml-auto h-4 w-4 animate-spin hidden"
+				fill="none"
+				id="ai-summary-spinner"
+				viewBox="0 0 24 24"
+				xmlns="http://www.w3.org/2000/svg"
+			>
+				<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+				<path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+			</svg>
+		</button>
+		<div
+			class="hidden border-t border-muted/30 px-4 py-3 text-sm leading-relaxed"
+			id="ai-summary-result"
+		>
+		</div>
+	</div>
+</ai-summary>
+
+<script>
+	class AiSummary extends HTMLElement {
+		#generated = false;
+
+		connectedCallback() {
+			const btn = this.querySelector<HTMLButtonElement>("#ai-summary-btn")!;
+			const label = this.querySelector<HTMLSpanElement>("#ai-summary-label")!;
+			const spinner = this.querySelector<SVGElement>("#ai-summary-spinner")!;
+			const result = this.querySelector<HTMLDivElement>("#ai-summary-result")!;
+
+			btn.addEventListener("click", async () => {
+				// Toggle visibility if already generated
+				if (this.#generated) {
+					result.classList.toggle("hidden");
+					return;
+				}
+
+				// Get article text content
+				const article = document.querySelector("article[data-pagefind-body]");
+				if (!article) return;
+
+				const content = article.textContent?.trim() ?? "";
+				if (!content) return;
+
+				// Show loading state
+				label.textContent = "Đang tóm tắt...";
+				spinner.classList.remove("hidden");
+				btn.disabled = true;
+
+				try {
+					const res = await fetch("/api/summarize", {
+						method: "POST",
+						headers: { "Content-Type": "application/json" },
+						body: JSON.stringify({ content: content.slice(0, 4000) }),
+					});
+
+					if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+					const data = await res.json() as { summary?: string; error?: string };
+
+					if (data.error) throw new Error(data.error);
+
+					result.textContent = data.summary ?? "Không thể tạo tóm tắt.";
+					result.classList.remove("hidden");
+					this.#generated = true;
+					label.textContent = "Tóm tắt bằng AI";
+				} catch (err) {
+					result.textContent = "⚠️ Lỗi khi tóm tắt. Vui lòng thử lại sau.";
+					result.classList.remove("hidden");
+					console.error("AI Summary error:", err);
+					label.textContent = "Tóm tắt bằng AI";
+				} finally {
+					spinner.classList.add("hidden");
+					btn.disabled = false;
+				}
+			});
+		}
+	}
+
+	customElements.define("ai-summary", AiSummary);
+</script>
