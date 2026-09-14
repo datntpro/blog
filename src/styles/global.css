@@ -16,48 +16,48 @@
 @property --color-global-bg {
 	syntax: "<color>";
 	inherits: true;
-	initial-value: oklch(98.48% 0 0);
+	initial-value: oklch(98.5% 0.005 170);
 }
 @property --color-global-text {
 	syntax: "<color>";
 	inherits: true;
-	initial-value: oklch(26.99% 0.0096 235.05);
+	initial-value: oklch(22% 0.03 260);
 }
 @property --color-muted {
 	syntax: "<color>";
 	inherits: true;
-	initial-value: oklch(44.6% 0.03 256.802);
+	initial-value: oklch(55% 0.02 250);
 }
 @property --color-link {
 	syntax: "<color>";
 	inherits: true;
-	initial-value: oklch(55.44% 0.0431 185.69);
+	initial-value: oklch(70% 0.14 170);
 }
 @property --color-accent {
 	syntax: "<color>";
 	inherits: true;
-	initial-value: oklch(55.27% 0.195 19.06);
+	initial-value: oklch(75% 0.17 170);
 }
 @property --color-accent-2 {
 	syntax: "<color>";
 	inherits: true;
-	initial-value: oklch(18.15% 0 0);
+	initial-value: oklch(22% 0.03 260);
 }
 @property --color-quote {
 	syntax: "<color>";
 	inherits: true;
-	initial-value: oklch(55.27% 0.195 19.06);
+	initial-value: oklch(75% 0.17 170);
 }
 
 /* you could refactor below to use light-dark(), depending on your target audience */
 @theme {
-	--color-global-bg: oklch(98.48% 0 0);
-	--color-global-text: oklch(26.99% 0.0096 235.05);
-	--color-muted: oklch(44.6% 0.03 256.802);
-	--color-link: oklch(55.44% 0.0431 185.69);
-	--color-accent: oklch(55.27% 0.195 19.06);
-	--color-accent-2: oklch(18.15% 0 0);
-	--color-quote: oklch(55.27% 0.195 19.06);
+	--color-global-bg: oklch(98.5% 0.005 170);
+	--color-global-text: oklch(22% 0.03 260);
+	--color-muted: oklch(55% 0.02 250);
+	--color-link: oklch(70% 0.14 170);
+	--color-accent: oklch(75% 0.17 170);
+	--color-accent-2: oklch(22% 0.03 260);
+	--color-quote: oklch(75% 0.17 170);
 }
 
 @layer base {
@@ -72,13 +72,13 @@
 
 		&[data-theme="dark"] {
 			color-scheme: dark;
-			--color-global-bg: oklch(23.64% 0.0045 248);
-			--color-global-text: oklch(83.54% 0 264);
-			--color-muted: oklch(70.7% 0.022 261.325);
-			--color-link: oklch(70.44% 0.1133 349);
-			--color-accent: oklch(70.91% 0.1415 163.7);
-			--color-accent-2: oklch(94.66% 0 0);
-			--color-quote: oklch(94.8% 0.106 136.49);
+			--color-global-bg: oklch(15% 0.01 250);
+			--color-global-text: oklch(85% 0.01 260);
+			--color-muted: oklch(65% 0.02 250);
+			--color-link: oklch(75% 0.14 170);
+			--color-accent: oklch(75% 0.17 170);
+			--color-accent-2: oklch(95% 0 0);
+			--color-quote: oklch(80% 0.12 170);
 		}
 
 		--color-mode-transition-duration: 300ms;
