@@ -31,13 +31,32 @@ const latestNotes = allNotes
 
 <PageLayout meta={{ title: "Home" }}>
 	<section>
-		<h1 class="title mb-12">Hello World!</h1>
+		<h1 class="title mb-4">Dat's Blog</h1>
+		<p class="mb-2 text-lg italic text-muted">Just for note.</p>
 		<p class="mb-4">
-			Hi, I’m a theme for Astro, a simple starter that you can use to create your website or blog.
-			If you want to know more about how you can customise me, add more posts, and make it your own,
-			click on the GitHub icon link below and it will take you to my repo.
+			Hi there! I'm Dat — a developer who loves building things and sharing notes along the way.
+			This is my personal corner on the internet where I jot down what I learn, explore, and build.
 		</p>
 		<SocialList />
+	</section>
+	<section class="mt-16">
+		<h2 class="title mb-4 text-xl">📬 Newsletter</h2>
+		<p class="mb-4 text-sm text-muted">Subscribe to get notified when I publish new posts. No spam, unsubscribe anytime.</p>
+		<form class="flex flex-col gap-3 sm:flex-row sm:items-center" id="newsletter-form">
+			<input
+				type="email"
+				placeholder="your@email.com"
+				required
+				class="border-muted bg-global-bg text-global-text rounded-md border px-4 py-2 text-sm focus:border-accent focus:outline-none sm:flex-1"
+				id="newsletter-email"
+			/>
+			<button
+				type="submit"
+				class="bg-accent text-global-bg rounded-md px-6 py-2 text-sm font-semibold transition-colors hover:opacity-90"
+			>
+				Subscribe
+			</button>
+		</form>
 	</section>
 	{
 		pinnedPosts.length > 0 && (
