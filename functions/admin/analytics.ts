@@ -8,7 +8,7 @@
  * - YouTube Data API v3
  */
 import { type AdminEnv, HttpError } from "./env";
-import { googleToken } from "./google";
+import { explainGoogleError, googleToken } from "./google";
 import { type CmsConfig, getConfig, getSecret, requireKv } from "./settings";
 
 type Fetch = typeof fetch;
@@ -52,7 +52,7 @@ async function gfetch<T>(
 		throw new HttpError(
 			res.status === 403 ? 403 : 502,
 			code,
-			`Google ${res.status}: ${msg}`.slice(0, 300),
+			explainGoogleError(url, res.status, msg).slice(0, 400),
 		);
 	}
 	return (await res.json()) as T;

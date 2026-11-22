@@ -80,7 +80,7 @@ const models = [
 				</ol>
 			</details>
 			<div class="mt-3 flex flex-wrap items-center gap-2">
-				<button class="btn btn-ghost" data-test="google" type="button">↻ Tải danh sách từ Google</button>
+				<button class="btn btn-ghost" data-test="google" type="button">↻ Tải danh sách & kiểm tra Google</button>
 				<span class="cms-help" data-google-msg></span>
 			</div>
 			<div class="cms-form-grid mt-3">
@@ -102,7 +102,9 @@ const models = [
 	type Config = Record<string, Record<string, string>>;
 	type SecretStatus = Record<string, { set: boolean; hint?: string; updatedAt?: string }>;
 	type Settings = { config: Config; secrets: SecretStatus };
-	type Discovery = { serviceAccount: string; ga4: { property: string; name: string; account: string }[]; searchConsole: { siteUrl: string; permission: string }[]; errors: string[] };
+	type Discovery = { serviceAccount: string; ga4: { property: string; name: string; account: string }[]; searchConsole: { siteUrl: string; permission: string }[]; errors: string[]; selected?: { ga4PropertyId: string; gscSiteUrl: string }; checks?: { name: string; ok: boolean; target: string; detail: string }[] };
+	/** escapes, then turns Google Cloud console links into anchors */
+	const linkify = (t: string) => esc(t).replace(/https:\/\/console\.cloud\.google\.com\/[^\s<]+/g, (u) => `<a class="underline" href="${u}" rel="noopener" target="_blank">${u}</a>`);
 
 	const $ = <T extends Element = HTMLElement>(s: string) => document.querySelector<T>(s)!;
 	const cfgFields = () => [...document.querySelectorAll<HTMLInputElement | HTMLSelectElement>("[data-c]")];
@@ -160,17 +162,24 @@ const models = [
 	function fillDiscovery(d: Discovery) {
 		const ga = $<HTMLSelectElement>("[data-pick='ga4']");
 		const gsc = $<HTMLSelectElement>("[data-pick='gsc']");
-		const keepGa = ga.value;
-		const keepGsc = gsc.value;
 		for (const p of d.ga4) ensureOption(ga, p.property, `${p.name} (${p.property}) · ${p.account}`);
 		for (const s of d.searchConsole) ensureOption(gsc, s.siteUrl, `${s.siteUrl} · ${s.permission}`);
-		ga.value = keepGa || d.ga4[0]?.property || "";
-		const auto = d.searchConsole.find((s) => s.siteUrl.includes("datnt.work"));
-		gsc.value = keepGsc && [...gsc.options].some((o) => o.value === keepGsc && o.value) ? keepGsc : auto?.siteUrl ?? d.searchConsole[0]?.siteUrl ?? "";
+		// the server already saved a reachable property/site if the old one was not listed
+		if (d.selected) {
+			ensureOption(ga, d.selected.ga4PropertyId);
+			ensureOption(gsc, d.selected.gscSiteUrl);
+			ga.value = d.selected.ga4PropertyId;
+			gsc.value = d.selected.gscSiteUrl;
+		}
+		const label = { ga4: "GA4", gsc: "Search Console" } as Record<string, string>;
+		const checks = (d.checks ?? [])
+			.map((c) => `<li class="${c.ok ? "text-emerald-600" : "text-red-500"}">${c.ok ? "✓" : "✕"} <b>${label[c.name] ?? c.name}</b>${c.target ? ` <code>${esc(c.target)}</code>` : ""}: ${linkify(c.detail)}</li>`)
+			.join("");
 		$("[data-google-msg]").innerHTML =
-			`${esc(d.serviceAccount)}: ${d.ga4.length} property GA4, ${d.searchConsole.length} site Search Console.` +
-			(d.errors.length ? `<br><span class="text-red-500">${d.errors.map(esc).join("<br>")}</span>` : "") +
-			(!d.ga4.length && !d.searchConsole.length ? "<br>Chưa thấy gì: nhớ thêm email service account vào GA4 và Search Console." : " Nhớ bấm Lưu cài đặt.");
+			`${esc(d.serviceAccount)}: thấy ${d.ga4.length} property GA4, ${d.searchConsole.length} site Search Console.` +
+			(d.errors.length ? `<br><span class="text-red-500">${d.errors.map(linkify).join("<br>")}</span>` : "") +
+			(checks ? `<ul class="mt-1 space-y-1">${checks}</ul>` : "") +
+			(!d.ga4.length && !d.searchConsole.length && !d.errors.length ? "<br>Chưa thấy gì: thêm email service account vào GA4 (Viewer) và Search Console (Restricted), đợi vài phút rồi bấm lại." : "");
 	}
 
 	async function test(target: string, btn: HTMLButtonElement) {
@@ -185,7 +194,7 @@ const models = [
 			if (target === "google") fillDiscovery(res as unknown as Discovery);
 		} catch (e) {
 			toast((e as Error).message, "error");
-			if (target === "google") $("[data-google-msg]").innerHTML = `<span class="text-red-500">${esc((e as Error).message)}</span>`;
+			if (target === "google") $("[data-google-msg]").innerHTML = `<span class="text-red-500">${linkify((e as Error).message)}</span>`;
 		} finally {
 			btn.disabled = false;
 			btn.textContent = label;

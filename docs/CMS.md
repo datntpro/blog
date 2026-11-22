@@ -35,7 +35,7 @@ CMS nhỏ chạy trên chính Worker của blog: viết và sửa bài markdown,
 4. Mở `https://blog.datnt.work/admin/settings/`, đăng nhập qua Access, rồi nhập:
    - **GitHub fine-grained token**: chỉ repo `blog`, quyền *Contents: Read and write*. Bấm "Kiểm tra kết nối".
    - **AI Gateway**: Account ID, Gateway ID (tạo ở Cloudflare → AI → AI Gateway), Anthropic API key (hoặc lưu key trong gateway), gateway token nếu bật Authenticated Gateway. Bấm "Gửi thử 1 request".
-   - **Google** (dữ liệu dashboard ở phase 2): dán service account JSON, cấp quyền cho email service account trong GA4 (Viewer) và Search Console, rồi bấm "Tải danh sách từ Google" để chọn property và site.
+   - **Google** (dữ liệu dashboard ở phase 2): dán service account JSON, cấp quyền cho email service account trong GA4 (Viewer) và Search Console, rồi bấm "Tải danh sách & kiểm tra Google". CMS tự chọn property và site mà service account đọc được (kể cả domain property `sc-domain:datnt.work`), rồi gọi thử mỗi nguồn một request và báo lỗi cụ thể: chưa bật API (kèm link bật) hoặc chưa cấp quyền.
 
 ## Lưu ý khi viết bài
 

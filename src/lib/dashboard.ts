@@ -101,8 +101,6 @@ export function initFilters(root: HTMLElement, onChange: (days: number, fresh: b
 
 const SETUP_HINT: Record<string, string> = {
 	ga4_not_configured: "Chọn GA4 property trong Cài đặt → Google.",
-	google_forbidden:
-		"Service account chưa được cấp quyền. Thêm email service account vào GA4 (Viewer) và Search Console.",
 	google_not_configured: "Dán Google service account JSON trong Cài đặt → Google.",
 	gsc_not_configured: "Chọn site Search Console trong Cài đặt → Google.",
 	youtube_not_configured: "Nhập YouTube Data API key trong Cài đặt → Google.",
@@ -112,9 +110,10 @@ const SETUP_HINT: Record<string, string> = {
 export function showError(el: HTMLElement, err: unknown) {
 	const e = err as ApiError;
 	const hint = SETUP_HINT[e.code ?? ""];
+	const setup = hint || e.code === "google_forbidden" || e.code === "google_auth_failed";
 	el.innerHTML = `<div class="cms-empty"><p>${esc(hint ?? e.message ?? "Không tải được dữ liệu")}</p>${
-		hint
-			? '<a class="mt-2 inline-block underline" href="/admin/settings/#google">Mở Cài đặt</a>'
+		setup
+			? '<a class="mt-2 inline-block underline" href="/admin/settings/#google">Mở Cài đặt → Kiểm tra Google</a>'
 			: ""
 	}</div>`;
 }

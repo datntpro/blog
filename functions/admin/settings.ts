@@ -28,7 +28,7 @@ export const DEFAULT_CONFIG: CmsConfig = {
 	github: { branch: "main", owner: "datntpro", repo: "blog" },
 	google: {
 		ga4PropertyId: "",
-		gscSiteUrl: "sc-domain:blog.datnt.work",
+		gscSiteUrl: "",
 		youtubeChannel: "@datntwork",
 	},
 	site: { url: "https://blog.datnt.work" },
@@ -144,6 +144,9 @@ export async function setSecrets(env: AdminEnv, updates: unknown): Promise<void>
 	for (const [name, raw] of Object.entries(updates as Record<string, unknown>)) {
 		if (!(SECRET_NAMES as readonly string[]).includes(name)) continue;
 		const n = name as SecretName;
+		const changing = raw === null || (typeof raw === "string" && raw.trim() !== "");
+		// a cached access token belongs to the previous service account
+		if (n === "googleServiceAccount" && changing) await kv.delete("cms:google:token");
 		if (raw === null) {
 			await kv.delete(secretKey(n));
 			continue;
