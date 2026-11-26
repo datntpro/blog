@@ -1,0 +1,65 @@
+---
+import { Icon } from "astro-icon/components";
+import { projects } from "@/data/projects";
+import PageLayout from "@/layouts/Base.astro";
+
+const meta = {
+	description:
+		"Các dự án mã nguồn mở và công cụ bảo mật mà mình tự build, từ bộ quét lỗ hổng đến những tool nhỏ cho công việc hằng ngày.",
+	title: "Dự án",
+};
+---
+
+<PageLayout meta={meta} width="wide">
+	<header class="mb-10 max-w-2xl" data-reveal>
+		<p class="eyebrow">// projects</p>
+		<h1 class="text-accent-2 mt-3 text-[clamp(2rem,8vw,3rem)] leading-[1.1] font-extrabold tracking-[-0.03em]">Dự án</h1>
+		<p class="text-muted mt-3 text-base sm:text-lg">
+			Open source và những công cụ mình tự build để giải quyết vấn đề thật gặp hằng ngày.
+		</p>
+	</header>
+
+	<div class="mb-16 grid grid-cols-1 gap-4 sm:mb-20" data-reveal-stagger>
+		{
+			projects.map((p) => (
+				<article class="card p-5 sm:p-8">
+					<div class="flex flex-wrap items-start justify-between gap-3">
+						<div class="min-w-0">
+							<h2 class="text-accent-2 text-2xl font-bold tracking-tight sm:text-3xl">{p.name}</h2>
+							<p class="text-muted mt-1">{p.tagline}</p>
+						</div>
+						<span class="chip cursor-default">
+							<span aria-hidden="true" class="text-accent-strong me-1">●</span>
+							{p.status}
+						</span>
+					</div>
+
+					<p class="mt-5 max-w-3xl">{p.description}</p>
+
+					<p class="eyebrow mt-6">tính năng chính</p>
+					<ul class="mt-3 grid gap-2.5" role="list">
+						{p.features.map((f) => (
+							<li class="flex gap-2.5 text-sm">
+								<Icon aria-hidden="true" class="text-accent-strong mt-0.5 h-4 w-4 shrink-0" name="tabler:check" stroke-width="2" />
+								<span>{f}</span>
+							</li>
+						))}
+					</ul>
+
+					<p class="eyebrow mt-6">stack</p>
+					<ul class="mt-3 flex flex-wrap gap-1.5" role="list">
+						{p.stack.map((s) => <li class="chip cursor-default">{s}</li>)}
+					</ul>
+
+					<div class="border-line mt-6 flex flex-wrap items-center justify-between gap-x-4 gap-y-3 border-t border-dashed pt-5">
+						<p class="text-accent-strong font-mono text-xs">{p.tags.map((t) => `#${t}`).join(" ")}</p>
+						<a class="btn btn-primary" href={p.github} rel="noreferrer" target="_blank">
+							<Icon aria-hidden="true" class="h-5 w-5" name="mdi:github" />
+							Xem trên GitHub
+						</a>
+					</div>
+				</article>
+			))
+		}
+	</div>
+</PageLayout>

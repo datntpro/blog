@@ -9,6 +9,7 @@ import Terminal from "@/components/Terminal.astro";
 import YouTubeSection from "@/components/YouTubeSection.astro";
 import { getAllPosts, getUniqueTagsWithCount } from "@/data/post";
 import { focusAreas, roles, socialLinks, threatModel, toolbox } from "@/data/profile";
+import { projects } from "@/data/projects";
 import PageLayout from "@/layouts/Base.astro";
 import { siteConfig } from "@/site.config";
 import { collectionDateSort } from "@/utils/date";
@@ -226,20 +227,21 @@ const sevClass = {
 		<div data-reveal-stagger class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 [&>*:last-child:nth-child(odd)]:sm:col-span-2 [&>*:last-child:nth-child(odd)]:lg:col-span-1">
 			{
 				focusAreas.map((f) => {
-					const n = tagCounts.get(f.tag) ?? 0;
+					const n = f.href ? projects.length : (tagCounts.get(f.tag) ?? 0);
+					const unit = f.href ? "dự án" : "bài";
 					return (
 						<a
 							class="spot card hover:border-accent relative block overflow-hidden p-6 transition"
-							href={n ? `/tags/${f.tag}/` : "/posts/"}
+							href={f.href ?? (n ? `/tags/${f.tag}/` : "/posts/")}
 						>
-							<span aria-hidden="true" class="bg-accent-soft mb-5 grid h-11 w-11 place-items-center rounded-xl text-xl">
-								{f.icon}
+							<span aria-hidden="true" class="bg-accent-soft mb-5 grid h-11 w-11 place-items-center rounded-xl">
+								<Icon class="text-accent-strong h-6 w-6" name={f.icon} stroke-width="1.5" />
 							</span>
 							<h3 class="text-accent-2 mb-2 text-lg font-bold">{f.title}</h3>
 							<p class="text-muted text-sm">{f.text}</p>
 							<p class="text-accent-strong mt-5 font-mono text-xs">
 								#{f.tag}
-								{n > 0 && ` · ${n} bài`} →
+								{n > 0 && ` · ${n} ${unit}`} →
 							</p>
 						</a>
 					);
