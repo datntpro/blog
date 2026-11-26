@@ -13,6 +13,9 @@ const {
 	content: { data },
 	readingTime,
 } = Astro.props;
+// Optional avatar: falls back to initials if the file is ever removed.
+const avatarModules = import.meta.glob<{ default: ImageMetadata }>("/src/assets/avatar.jpg", { eager: true });
+const avatar = Object.values(avatarModules)[0]?.default;
 const initials = siteConfig.author
 	.split(" ")
 	.map((w) => w[0])
@@ -39,11 +42,24 @@ const initials = siteConfig.author
 </h1>
 <p class="text-muted mt-4 text-lg">{data.description}</p>
 <div class="border-line mt-6 flex flex-wrap items-center gap-x-3 gap-y-3 border-y py-4">
-	<span
-		aria-hidden="true"
-		class="bg-accent-2 text-accent dark:bg-accent-soft grid h-10 w-10 place-items-center rounded-full font-mono font-bold"
-		>{initials}</span
-	>
+	{
+		avatar ? (
+			<Image
+				alt={siteConfig.author}
+				class="border-surface ring-accent/50 h-10 w-10 shrink-0 rounded-full border-2 object-cover ring-2"
+				height={80}
+				src={avatar}
+				width={80}
+			/>
+		) : (
+			<span
+				aria-hidden="true"
+				class="bg-accent-2 text-accent dark:bg-accent-soft grid h-10 w-10 place-items-center rounded-full font-mono font-bold"
+			>
+				{initials}
+			</span>
+		)
+	}
 	<div class="leading-tight">
 		<p class="text-accent-2 text-sm font-semibold">{siteConfig.author}</p>
 		<p class="text-muted font-mono text-xs">

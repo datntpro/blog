@@ -1,4 +1,5 @@
 ---
+import { Image } from "astro:assets";
 import { Icon } from "astro-icon/components";
 import { projects } from "@/data/projects";
 import PageLayout from "@/layouts/Base.astro";
@@ -19,47 +20,434 @@ const meta = {
 		</p>
 	</header>
 
-	<div class="mb-16 grid grid-cols-1 gap-4 sm:mb-20" data-reveal-stagger>
+	<div class="mb-16 grid grid-cols-1 gap-6 sm:mb-20" data-reveal-stagger>
 		{
 			projects.map((p) => (
-				<article class="card p-5 sm:p-8">
-					<div class="flex flex-wrap items-start justify-between gap-3">
-						<div class="min-w-0">
-							<h2 class="text-accent-2 text-2xl font-bold tracking-tight sm:text-3xl">{p.name}</h2>
-							<p class="text-muted mt-1">{p.tagline}</p>
+				<article
+					class:list={["card project-card p-5 sm:p-8", p.brand && "has-brand"]}
+					style={p.brand ? `--brand-from:${p.brand.from};--brand-to:${p.brand.to}` : undefined}
+				>
+					<div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between lg:gap-6">
+						<div class="flex min-w-0 items-center gap-4">
+							{p.logo && (
+								<span class="project-logo shrink-0">
+									<img alt="" class="h-10 w-10 sm:h-11 sm:w-11" height="44" src={p.logo} width="44" />
+								</span>
+							)}
+							<div class="min-w-0">
+								<h2 class="text-accent-2 text-2xl font-extrabold tracking-tight sm:text-3xl">
+									{p.brand && p.wordmark ? (
+										<>
+											{p.wordmark[0]}
+											<span class="brand-text">{p.wordmark[1]}</span>
+										</>
+									) : (
+										p.name
+									)}
+								</h2>
+								<p class="text-muted mt-1 text-sm sm:text-base">{p.tagline}</p>
+							</div>
 						</div>
-						<span class="chip cursor-default">
-							<span aria-hidden="true" class="text-accent-strong me-1">●</span>
-							{p.status}
-						</span>
+						<div class="flex flex-col gap-3 sm:flex-row sm:items-center lg:shrink-0">
+							<span class="chip cursor-default self-start sm:self-auto">
+								<span aria-hidden="true" class="text-accent-strong me-1">●</span>
+								{p.status}
+							</span>
+							<a class:list={["btn btn-primary w-full sm:w-auto", p.brand && "btn-brand"]} href={p.github} rel="noreferrer" target="_blank">
+								<Icon aria-hidden="true" class="h-5 w-5" name="mdi:github" />
+								Xem trên GitHub
+							</a>
+						</div>
 					</div>
 
-					<p class="mt-5 max-w-3xl">{p.description}</p>
+					{p.screenshots && p.screenshots.length > 0 && (
+						<div class="shots mt-6 sm:mt-8" data-shots>
+							<p class="eyebrow mb-3">giao diện</p>
+							<div class="browser-frame">
+								<div aria-hidden="true" class="browser-bar">
+									<span />
+									<span />
+									<span />
+								</div>
+								<div class="shot-stage">
+									{p.screenshots.map((shot, i) => (
+										<button
+											aria-label={`Phóng to: ${shot.caption}`}
+											class="shot-slide"
+											data-active={i === 0 ? "true" : "false"}
+											data-slide
+											type="button"
+										>
+											<Image
+												alt={shot.alt}
+												class="shot-img shot-dark"
+												fetchpriority={i === 0 ? "high" : undefined}
+												loading={i === 0 ? "eager" : "lazy"}
+												sizes="(min-width: 1024px) 960px, 100vw"
+												src={shot.src}
+												widths={[640, 960, 1440, 1800]}
+											/>
+											{shot.light && (
+												<Image
+													alt={shot.alt}
+													class="shot-img shot-light"
+													loading={i === 0 ? "eager" : "lazy"}
+													sizes="(min-width: 1024px) 960px, 100vw"
+													src={shot.light}
+													widths={[640, 960, 1440, 1800]}
+												/>
+											)}
+										</button>
+									))}
+								</div>
+							</div>
+							<ul class="thumbs mt-4" role="list">
+								{p.screenshots.map((shot, i) => (
+									<li>
+										<button
+											aria-pressed={i === 0 ? "true" : "false"}
+											class="thumb"
+											data-thumb={i}
+											type="button"
+										>
+											<Image
+												alt=""
+												class="shot-img shot-dark"
+												height={100}
+												loading="lazy"
+												sizes="160px"
+												src={shot.src}
+												widths={[160, 320]}
+											/>
+											{shot.light && (
+												<Image
+													alt=""
+													class="shot-img shot-light"
+													height={100}
+													loading="lazy"
+													sizes="160px"
+													src={shot.light}
+													widths={[160, 320]}
+												/>
+											)}
+											<span class="thumb-cap">{shot.caption}</span>
+										</button>
+									</li>
+								))}
+							</ul>
+						</div>
+					)}
 
-					<p class="eyebrow mt-6">tính năng chính</p>
-					<ul class="mt-3 grid gap-2.5" role="list">
-						{p.features.map((f) => (
-							<li class="flex gap-2.5 text-sm">
-								<Icon aria-hidden="true" class="text-accent-strong mt-0.5 h-4 w-4 shrink-0" name="tabler:check" stroke-width="2" />
-								<span>{f}</span>
-							</li>
-						))}
-					</ul>
+					<div class="mt-6 grid gap-6 sm:mt-8 lg:grid-cols-2 lg:gap-8">
+						<div>
+							<p class="eyebrow">giới thiệu</p>
+							<p class="mt-3">{p.description}</p>
+						</div>
+						<div>
+							<p class="eyebrow">tính năng chính</p>
+							<ul class="mt-3 grid gap-2" role="list">
+								{p.features.map((f) => (
+									<li class="flex gap-2.5 text-sm">
+										<Icon aria-hidden="true" class="text-accent-strong mt-0.5 h-4 w-4 shrink-0" name="tabler:check" stroke-width="2" />
+										<span>{f}</span>
+									</li>
+								))}
+							</ul>
+						</div>
+					</div>
 
-					<p class="eyebrow mt-6">stack</p>
-					<ul class="mt-3 flex flex-wrap gap-1.5" role="list">
-						{p.stack.map((s) => <li class="chip cursor-default">{s}</li>)}
-					</ul>
-
-					<div class="border-line mt-6 flex flex-wrap items-center justify-between gap-x-4 gap-y-3 border-t border-dashed pt-5">
-						<p class="text-accent-strong font-mono text-xs">{p.tags.map((t) => `#${t}`).join(" ")}</p>
-						<a class="btn btn-primary" href={p.github} rel="noreferrer" target="_blank">
-							<Icon aria-hidden="true" class="h-5 w-5" name="mdi:github" />
-							Xem trên GitHub
-						</a>
+					<div class="border-line mt-6 grid gap-4 border-t border-dashed pt-6 sm:mt-8 lg:grid-cols-[1fr_auto] lg:items-center lg:gap-8">
+						<div>
+							<p class="eyebrow">stack</p>
+							<ul class="mt-3 flex flex-wrap gap-2" role="list">
+								{p.stack.map((s) => <li class="chip cursor-default">{s}</li>)}
+							</ul>
+						</div>
+						<p class="text-accent-strong font-mono text-xs lg:max-w-xs lg:text-right">{p.tags.map((t) => `#${t}`).join(" ")}</p>
 					</div>
 				</article>
 			))
 		}
 	</div>
+
+	<dialog aria-label="Xem ảnh phóng to" class="shot-dialog" id="shot-dialog">
+		<button aria-label="Đóng" class="shot-close" id="shot-close" type="button">
+			<Icon aria-hidden="true" class="h-5 w-5" name="tabler:x" />
+		</button>
+		<img alt="" id="shot-big" />
+		<p id="shot-cap"></p>
+	</dialog>
 </PageLayout>
+
+<script>
+	const dialog = document.getElementById("shot-dialog") as HTMLDialogElement | null;
+	const big = document.getElementById("shot-big") as HTMLImageElement | null;
+	const cap = document.getElementById("shot-cap");
+	let opener: HTMLElement | null = null;
+
+	const visibleImg = (root: Element) =>
+		Array.from(root.querySelectorAll<HTMLImageElement>("img")).find((i) => i.offsetParent !== null);
+
+	document.querySelectorAll<HTMLElement>("[data-shots]").forEach((box) => {
+		const slides = Array.from(box.querySelectorAll<HTMLElement>("[data-slide]"));
+		const thumbs = Array.from(box.querySelectorAll<HTMLElement>("[data-thumb]"));
+		const select = (n: number) => {
+			slides.forEach((el, i) => (el.dataset.active = String(i === n)));
+			thumbs.forEach((el, i) => el.setAttribute("aria-pressed", String(i === n)));
+		};
+		thumbs.forEach((t, i) => t.addEventListener("click", () => select(i)));
+		slides.forEach((sl, i) =>
+			sl.addEventListener("click", () => {
+				const img = visibleImg(sl);
+				if (!dialog || !big || !img) return;
+				opener = sl;
+				big.srcset = img.srcset;
+				big.sizes = "96vw";
+				big.src = img.currentSrc || img.src;
+				big.alt = img.alt;
+				if (cap) cap.textContent = img.alt;
+				void i;
+				dialog.showModal();
+			}),
+		);
+	});
+
+	const close = () => dialog?.close();
+	document.getElementById("shot-close")?.addEventListener("click", close);
+	// click on backdrop closes
+	dialog?.addEventListener("click", (e) => {
+		if (e.target === dialog) close();
+	});
+	dialog?.addEventListener("close", () => opener?.focus());
+</script>
+
+<style is:global>
+	.project-card.has-brand {
+		position: relative;
+		overflow: hidden;
+		transition:
+			border-color 0.25s,
+			box-shadow 0.25s;
+	}
+	.project-card.has-brand::before {
+		content: "";
+		position: absolute;
+		inset: 0 0 auto 0;
+		height: 3px;
+		background: linear-gradient(135deg, var(--brand-from), var(--brand-to));
+	}
+	.project-card.has-brand:hover {
+		border-color: color-mix(in oklab, var(--brand-from) 55%, var(--color-line));
+		box-shadow:
+			var(--shadow-card),
+			0 0 0 1px color-mix(in oklab, var(--brand-from) 25%, transparent),
+			0 12px 40px -16px color-mix(in oklab, var(--brand-from) 45%, transparent);
+	}
+	.project-logo {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		padding: 0.5rem;
+		border-radius: 1rem;
+		background: oklch(17% 0.03 270);
+		border: 1px solid color-mix(in oklab, var(--brand-from) 35%, transparent);
+		box-shadow: 0 0 22px -4px color-mix(in oklab, var(--brand-from) 50%, transparent);
+	}
+	.brand-text {
+		background: linear-gradient(135deg, var(--brand-from), var(--brand-to));
+		-webkit-background-clip: text;
+		background-clip: text;
+		-webkit-text-fill-color: transparent;
+		color: transparent;
+	}
+	.btn.btn-brand {
+		background: linear-gradient(135deg, var(--brand-from), var(--brand-to));
+		color: #fff;
+		text-shadow: 0 1px 2px rgb(0 0 0 / 0.25);
+	}
+	@media (prefers-reduced-motion: no-preference) {
+		.project-logo {
+			transition:
+				transform 0.3s,
+				box-shadow 0.3s;
+		}
+		.project-card.has-brand:hover .project-logo {
+			transform: translateY(-2px) scale(1.04);
+			box-shadow: 0 0 30px -2px color-mix(in oklab, var(--brand-from) 65%, transparent);
+		}
+	}
+
+	.shots .shot-light {
+		display: none;
+	}
+	@media (prefers-color-scheme: light) {
+		html:not([data-theme="dark"]) .shots .shot-light + .shot-dark,
+		html:not([data-theme="dark"]) .shots .shot-dark:has(+ .shot-light) {
+			display: none;
+		}
+		html:not([data-theme="dark"]) .shots .shot-light {
+			display: block;
+		}
+	}
+	html[data-theme="light"] .shots .shot-dark:has(+ .shot-light) {
+		display: none;
+	}
+	html[data-theme="light"] .shots .shot-light {
+		display: block;
+	}
+	.shot-img {
+		width: 100%;
+		height: auto;
+		display: block;
+	}
+	.browser-frame {
+		overflow: hidden;
+		border-radius: 0.75rem;
+		border: 1px solid color-mix(in oklab, var(--brand-from, var(--color-accent)) 30%, var(--color-line));
+		background: var(--color-surface-2);
+		box-shadow:
+			0 24px 48px -24px rgb(0 0 0 / 0.45),
+			0 0 56px -16px color-mix(in oklab, var(--brand-from, var(--color-accent)) 40%, transparent);
+	}
+	.browser-bar {
+		display: flex;
+		gap: 6px;
+		padding: 10px 12px;
+		border-bottom: 1px solid var(--color-line);
+		background: var(--color-surface);
+	}
+	.browser-bar span {
+		width: 10px;
+		height: 10px;
+		border-radius: 9999px;
+		background: var(--color-line);
+	}
+	.browser-bar span:nth-child(1) {
+		background: #ff5f57;
+	}
+	.browser-bar span:nth-child(2) {
+		background: #febc2e;
+	}
+	.browser-bar span:nth-child(3) {
+		background: #28c840;
+	}
+	.shot-stage {
+		display: grid;
+		aspect-ratio: 16 / 10;
+	}
+	.shot-slide {
+		grid-area: 1 / 1;
+		display: block;
+		cursor: zoom-in;
+		padding: 0;
+		border: 0;
+		background: none;
+		overflow: hidden;
+	}
+	.shot-slide[data-active="false"] {
+		visibility: hidden;
+	}
+	.shot-slide:focus-visible,
+	.thumb:focus-visible,
+	.shot-close:focus-visible {
+		outline: 2px solid var(--brand-from, var(--color-accent));
+		outline-offset: 2px;
+	}
+	.thumbs {
+		display: grid;
+		grid-auto-flow: column;
+		grid-auto-columns: minmax(8rem, 1fr);
+		gap: 0.75rem;
+		overflow-x: auto;
+		padding-bottom: 4px;
+		scroll-snap-type: x proximity;
+	}
+	.thumbs > li {
+		scroll-snap-align: start;
+	}
+	.thumb {
+		display: block;
+		width: 100%;
+		cursor: pointer;
+		text-align: left;
+		padding: 0;
+		border: 1px solid var(--color-line);
+		border-radius: 0.5rem;
+		background: var(--color-surface);
+		overflow: hidden;
+		opacity: 0.7;
+		transition:
+			opacity 0.2s,
+			border-color 0.2s;
+	}
+	.thumb:hover,
+	.thumb[aria-pressed="true"] {
+		opacity: 1;
+		border-color: var(--brand-from, var(--color-accent));
+	}
+	.thumb .shot-img {
+		aspect-ratio: 16 / 10;
+		object-fit: cover;
+		object-position: top;
+	}
+	.thumb-cap {
+		display: block;
+		padding: 6px 8px;
+		font-size: 0.6875rem;
+		line-height: 1.2;
+		font-family: var(--font-mono);
+		color: var(--color-muted);
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+	@media (min-width: 1024px) {
+		.thumbs {
+			grid-auto-flow: row;
+			grid-template-columns: repeat(5, 1fr);
+			overflow: visible;
+		}
+	}
+	.shot-dialog {
+		margin: auto;
+		padding: 0;
+		border: 0;
+		background: transparent;
+		max-width: 96vw;
+		max-height: 94vh;
+		overflow: visible;
+	}
+	.shot-dialog::backdrop {
+		background: rgb(0 0 0 / 0.8);
+	}
+	.shot-dialog img {
+		display: block;
+		max-width: 96vw;
+		max-height: 84vh;
+		width: auto;
+		height: auto;
+		border-radius: 0.75rem;
+		box-shadow: 0 0 80px -10px color-mix(in oklab, #5b5bf7 50%, transparent);
+	}
+	.shot-dialog p {
+		margin-top: 0.75rem;
+		text-align: center;
+		font-size: 0.875rem;
+		color: #e5e7eb;
+	}
+	.shot-close {
+		position: absolute;
+		top: -2.75rem;
+		right: 0;
+		display: inline-flex;
+		height: 2.25rem;
+		width: 2.25rem;
+		align-items: center;
+		justify-content: center;
+		border-radius: 0.75rem;
+		border: 1px solid rgb(255 255 255 / 0.3);
+		background: rgb(0 0 0 / 0.5);
+		color: #fff;
+		cursor: pointer;
+	}
+</style>
