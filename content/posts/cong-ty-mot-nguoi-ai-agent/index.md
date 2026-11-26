@@ -4,14 +4,18 @@ description: "Vận hành công ty một người bằng 5 AI agent trên Orca: 
 publishDate: 2026-11-26
 tags: [cong-ty-mot-nguoi, ai-agent, claude, orca, multi-agent, devsecops]
 draft: false
+coverImage:
+  src: "./cover.png"
+  alt: "Công ty một người với AI agent: 7 bài học tuần đầu"
 ---
 
 Mình là Security Engineer, mảng AppSec. Ngoài giờ mình ôm cùng lúc vài dự án ở những mảng rất khác nhau: công cụ bảo mật, ứng dụng desktop, sản phẩm tài chính cá nhân, website nội dung và một kênh video. Mình biết một người không thể tự làm hết. Nên tuần này mình thử dựng **công ty một người** đúng nghĩa: mỗi mảng giao cho một **AI agent**, còn mình chỉ làm giám đốc, tức là ra quyết định, duyệt và chịu trách nhiệm.
 
 Đọc về "công ty một người thời AI" thì nhiều, nhưng phần lớn là bài khái niệm hoặc quảng cáo công cụ. Bài này khác: đây là nhật ký vận hành thật sau 7 ngày, có con số, có quy trình, và có cả những lần suýt toang.
 
-> [!NOTE]
-> Bài này được viết với sự trợ giúp của chính một bot trong hệ thống (richard, "bộ não thứ 2"). Nó gom ghi chép của các bot khác, còn mình duyệt và sửa lại.
+:::note
+Bài này được viết với sự trợ giúp của chính một bot trong hệ thống (richard, "bộ não thứ 2"). Nó gom ghi chép của các bot khác, còn mình duyệt và sửa lại.
+:::
 
 ## TL;DR: 7 bài học sau tuần đầu
 
@@ -44,7 +48,7 @@ Mọi thứ chạy trên Orca, một môi trường quản lý nhiều agent Cla
 | navie | Đạo diễn, biên kịch | kênh video ngắn |
 | richard | Bộ não thứ 2 | gom kiến thức của cả nhóm vào wiki Obsidian |
 
-![Sơ đồ công ty một người với 5 AI agent: chủ giao mảng cho 5 bot, bot giao việc cho worker Opus–Sonnet, review rồi merge; richard gom ghi chép vào wiki Obsidian](/images/posts/so-do-cong-ty-mot-nguoi.svg)
+![Sơ đồ công ty một người với 5 AI agent: chủ giao mảng cho 5 bot, bot giao việc cho worker Opus–Sonnet, review rồi merge; richard gom ghi chép vào wiki Obsidian](./so-do.svg)
 
 ### Bot điều phối, worker làm
 
@@ -70,8 +74,9 @@ Tuần đầu, mỗi PR chạy theo kiểu: **Opus** lập plan → **Sonnet** c
 6. **Mức kiểm tra theo rủi ro.** Chỉ PR về bảo mật hoặc xoá file mới dựng lab và chạy tấn công thử. PR tài liệu, file cấu hình JSON hay giao diện chỉ hiển thị thì đọc diff và chạy test là đủ.
 7. Kiểm tra nói "sẵn sàng" **và** CI xanh thì bot tự merge (squash, xoá branch).
 
-> [!TIP]
-> Model mạnh nhất nên đặt ở chỗ **cần phán đoán khó nhất**: lập plan và lần review đầu. Kiểm tra lại "đã sửa đúng chỗ bị chỉ ra chưa" là việc hẹp hơn nhiều, model nhanh hơn làm vẫn tốt.
+:::tip
+Model mạnh nhất nên đặt ở chỗ **cần phán đoán khó nhất**: lập plan và lần review đầu. Kiểm tra lại "đã sửa đúng chỗ bị chỉ ra chưa" là việc hẹp hơn nhiều, model nhanh hơn làm vẫn tốt.
+:::
 
 **Bài học 2:** không cần model lớn ở mọi bước. Nhưng bước nào cắt thì phải có lý do, và phải có giới hạn số vòng sửa để không lặp vô tận.
 
@@ -123,8 +128,9 @@ Câu hỏi đầu tiên của mình là: Apple có [container riêng](https://gi
 
 Ngay lần đầu, script tạo dữ liệu giả để test tính năng dọn file lại **chạy nhầm trên máy thật**. Nó tạo một app giả trong `/Applications` và ghi đè cấu hình git chung. Bot đã tự dọn, và thêm một chốt trong code: script chỉ chạy được khi phát hiện mình đang ở trong VM.
 
-> [!WARNING]
-> Lời dặn "chỉ chạy trong VM" trong spec là **không đủ**. Chốt chặn phải nằm trong code: kiểm tra môi trường, và dừng ngay nếu không đúng.
+:::warning
+Lời dặn "chỉ chạy trong VM" trong spec là **không đủ**. Chốt chặn phải nằm trong code: kiểm tra môi trường, và dừng ngay nếu không đúng.
+:::
 
 Thêm một bất ngờ nhỏ: xoá cache ảnh tưởng lấy lại được 87 GB, nhưng thực tế chỉ được khoảng 1 GB. Lý do: trên APFS, ảnh gốc dùng chung block với cache.
 
