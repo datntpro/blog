@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 600" width="900" height="600" font-family="system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif" role="img" aria-labelledby="t d">
+  <title id="t">Sơ đồ công ty một người với 5 AI agent</title>
+  <desc id="d">Chủ ở trên cùng ra quyết định và duyệt. Năm bot javis, alex, sanh, navie, richard mỗi bot một mảng. Các bot giao việc cho worker chạy trong git worktree riêng, worker mở PR, qua kiểm tra và CI rồi merge. richard gom ghi chép của mọi bot vào wiki Obsidian.</desc>
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#64748b"/></marker>
+  </defs>
+  <rect width="900" height="600" rx="18" fill="#f8fafc"/>
+
+  <!-- Owner -->
+  <rect x="330" y="28" width="240" height="64" rx="12" fill="#0f172a"/>
+  <text x="450" y="56" text-anchor="middle" font-size="18" font-weight="700" fill="#ffffff">Chủ (giám đốc)</text>
+  <text x="450" y="78" text-anchor="middle" font-size="13" fill="#cbd5e1">quyết định · duyệt · chịu trách nhiệm</text>
+
+  <!-- arrows owner -> bots -->
+  <g stroke="#64748b" stroke-width="1.6" fill="none" marker-end="url(#a)">
+    <path d="M450 92 L106 150"/><path d="M450 92 L278 150"/><path d="M450 92 L450 150"/><path d="M450 92 L622 150"/><path d="M450 92 L794 150"/>
+  </g>
+  
+
+  <!-- Bots -->
+  <g font-size="13" text-anchor="middle">
+    <rect x="30" y="152" width="152" height="86" rx="12" fill="#dbeafe" stroke="#3b82f6"/>
+    <text x="106" y="180" font-size="16" font-weight="700" fill="#1e3a8a">javis</text>
+    <text x="106" y="202" fill="#1e3a8a">bảo mật &amp; code</text>
+    <text x="106" y="222" font-size="12" fill="#334155">bảo mật, app desktop</text>
+
+    <rect x="202" y="152" width="152" height="86" rx="12" fill="#dcfce7" stroke="#22c55e"/>
+    <text x="278" y="180" font-size="16" font-weight="700" fill="#14532d">alex</text>
+    <text x="278" y="202" fill="#14532d">tài chính, fintech</text>
+    <text x="278" y="222" fill="#334155">tài chính cá nhân</text>
+
+    <rect x="374" y="152" width="152" height="86" rx="12" fill="#fef3c7" stroke="#f59e0b"/>
+    <text x="450" y="180" font-size="16" font-weight="700" fill="#78350f">sanh</text>
+    <text x="450" y="202" fill="#78350f">vận hành web, SEO</text>
+    <text x="450" y="222" fill="#334155">website nội dung</text>
+
+    <rect x="546" y="152" width="152" height="86" rx="12" fill="#fce7f3" stroke="#ec4899"/>
+    <text x="622" y="180" font-size="16" font-weight="700" fill="#831843">navie</text>
+    <text x="622" y="202" fill="#831843">đạo diễn, biên kịch</text>
+    <text x="622" y="222" fill="#334155">kênh video ngắn</text>
+
+    <rect x="718" y="152" width="152" height="86" rx="12" fill="#ede9fe" stroke="#8b5cf6"/>
+    <text x="794" y="180" font-size="16" font-weight="700" fill="#4c1d95">richard</text>
+    <text x="794" y="202" fill="#4c1d95">bộ não thứ 2</text>
+    <text x="794" y="222" fill="#334155">gom kiến thức</text>
+  </g>
+
+  <!-- bots -> workers -->
+  <g stroke="#64748b" stroke-width="1.6" fill="none" marker-end="url(#a)">
+    <path d="M106 238 L300 318"/><path d="M278 238 L330 318"/><path d="M450 238 L390 318"/><path d="M622 238 L420 318"/>
+  </g>
+  <text x="40" y="290" font-size="12" fill="#475569">bot điều phối, không tự code</text>
+
+  <!-- Worker pipeline -->
+  <rect x="40" y="320" width="560" height="200" rx="14" fill="#ffffff" stroke="#cbd5e1"/>
+  <text x="60" y="348" font-size="15" font-weight="700" fill="#0f172a">Worker (mỗi việc một git worktree riêng)</text>
+  <g font-size="13" text-anchor="middle">
+    <rect x="60" y="366" width="118" height="58" rx="10" fill="#e0e7ff"/>
+    <text x="119" y="390" font-weight="700" fill="#312e81">Opus</text>
+    <text x="119" y="410" fill="#312e81">lập plan</text>
+    <rect x="198" y="366" width="118" height="58" rx="10" fill="#e0f2fe"/>
+    <text x="257" y="390" font-weight="700" fill="#0c4a6e">Sonnet</text>
+    <text x="257" y="410" fill="#0c4a6e">code → PR</text>
+    <rect x="336" y="366" width="118" height="58" rx="10" fill="#e0e7ff"/>
+    <text x="395" y="390" font-weight="700" fill="#312e81">Opus</text>
+    <text x="395" y="410" fill="#312e81">review lần đầu</text>
+    <rect x="474" y="366" width="108" height="58" rx="10" fill="#e0f2fe"/>
+    <text x="528" y="390" font-weight="700" fill="#0c4a6e">Sonnet</text>
+    <text x="528" y="410" fill="#0c4a6e">review lại</text>
+  </g>
+  <g stroke="#64748b" stroke-width="1.6" fill="none" marker-end="url(#a)">
+    <path d="M178 395 L196 395"/><path d="M316 395 L334 395"/><path d="M454 395 L472 395"/>
+  </g>
+  <text x="60" y="452" font-size="12.5" fill="#334155">• tối đa 2 vòng sửa · lỗi nhỏ còn lại → issue follow-up</text>
+  <text x="60" y="472" font-size="12.5" fill="#334155">• kiểm tra theo rủi ro: lab + tấn công thử chỉ cho PR bảo mật / xoá file</text>
+  <text x="60" y="492" font-size="12.5" fill="#334155">• app desktop test trong VM macOS dùng xong là bỏ</text>
+
+  <!-- merge -->
+  <rect x="620" y="366" width="250" height="58" rx="10" fill="#dcfce7" stroke="#22c55e"/>
+  <text x="745" y="390" text-anchor="middle" font-size="14" font-weight="700" fill="#14532d">Merge</text>
+  <text x="745" y="410" text-anchor="middle" font-size="12.5" fill="#14532d">review "sẵn sàng" + CI xanh</text>
+  <path d="M582 395 L618 395" stroke="#64748b" stroke-width="1.6" fill="none" marker-end="url(#a)"/>
+
+  <!-- richard -> wiki -->
+  <path d="M794 238 L794 452" stroke="#8b5cf6" stroke-width="1.6" stroke-dasharray="5 4" fill="none" marker-end="url(#a)"/>
+  <rect x="660" y="455" width="210" height="64" rx="10" fill="#ede9fe" stroke="#8b5cf6"/>
+  <text x="765" y="481" text-anchor="middle" font-size="14" font-weight="700" fill="#4c1d95">Wiki Obsidian</text>
+  <text x="765" y="501" text-anchor="middle" font-size="12" fill="#4c1d95">21:00 mỗi tối gom từ mọi bot</text>
+
+  <text x="450" y="570" text-anchor="middle" font-size="12" fill="#64748b">Mỗi bot: SOUL.md (vai trò, điều cấm) + MEMORY.md (quyết định của chủ) · việc theo dõi bằng item</text>
+</svg>
