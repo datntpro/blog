@@ -1,11 +1,13 @@
 <theme-toggle class="flex">
-	<button class="icon-btn relative touch-manipulation" type="button">
+	<button class="icon-btn toggle-btn touch-manipulation" type="button">
 		<span class="sr-only">Dark Theme</span>
 		<svg
 			aria-hidden="true"
-			class="absolute inset-s-1/2 top-1/2 h-5 w-5 -translate-x-1/2 -translate-y-1/2 rotate-0 scale-100 opacity-100 transition-[transform,opacity] duration-200 ease-[var(--ease-out)] dark:-rotate-45 dark:scale-90 dark:opacity-0"
+			class="theme-icon theme-sun"
 			fill="none"
 			focusable="false"
+			height="20"
+			width="20"
 			id="sun-svg"
 			stroke-width="1.5"
 			viewBox="0 0 24 24"
@@ -34,9 +36,11 @@
 		</svg>
 		<svg
 			aria-hidden="true"
-			class="absolute inset-s-1/2 top-1/2 h-5 w-5 -translate-x-1/2 -translate-y-1/2 rotate-45 scale-90 opacity-0 transition-[transform,opacity] duration-200 ease-[var(--ease-out)] dark:rotate-0 dark:scale-100 dark:opacity-100"
+			class="theme-icon theme-moon"
 			fill="none"
 			focusable="false"
+			height="20"
+			width="20"
 			id="moon-svg"
 			stroke="currentColor"
 			stroke-width="1.5"
@@ -51,6 +55,45 @@
 		</svg>
 	</button>
 </theme-toggle>
+
+<style>
+	/* both icons share one grid cell, so they stay centred without absolute positioning or translate */
+	.toggle-btn {
+		display: grid;
+		place-items: center;
+		overflow: hidden;
+	}
+	.theme-icon {
+		grid-area: 1 / 1;
+		width: 20px;
+		height: 20px;
+		transform-origin: center;
+		transition:
+			rotate 200ms var(--ease-out),
+			scale 200ms var(--ease-out),
+			opacity 200ms var(--ease-out);
+	}
+	.theme-sun {
+		rotate: 0deg;
+		scale: 1;
+		opacity: 1;
+	}
+	.theme-moon {
+		rotate: 45deg;
+		scale: 0.9;
+		opacity: 0;
+	}
+	:global([data-theme="dark"]) .theme-sun {
+		rotate: -45deg;
+		scale: 0.9;
+		opacity: 0;
+	}
+	:global([data-theme="dark"]) .theme-moon {
+		rotate: 0deg;
+		scale: 1;
+		opacity: 1;
+	}
+</style>
 
 <script>
 	import { rootInDarkMode } from "@/utils/domElement";
