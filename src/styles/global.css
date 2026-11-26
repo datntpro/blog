@@ -15,69 +15,6 @@
 /* use a selector-based strategy for dark mode */
 @custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
 
-/* register custom colour properties */
-@property --color-global-bg {
-	syntax: "<color>";
-	inherits: true;
-	initial-value: oklch(98.5% 0.005 170);
-}
-@property --color-global-text {
-	syntax: "<color>";
-	inherits: true;
-	initial-value: oklch(22% 0.03 260);
-}
-@property --color-muted {
-	syntax: "<color>";
-	inherits: true;
-	initial-value: oklch(55% 0.02 250);
-}
-@property --color-link {
-	syntax: "<color>";
-	inherits: true;
-	initial-value: oklch(70% 0.14 170);
-}
-@property --color-accent {
-	syntax: "<color>";
-	inherits: true;
-	initial-value: oklch(75% 0.17 170);
-}
-@property --color-accent-2 {
-	syntax: "<color>";
-	inherits: true;
-	initial-value: oklch(22% 0.03 260);
-}
-@property --color-quote {
-	syntax: "<color>";
-	inherits: true;
-	initial-value: oklch(75% 0.17 170);
-}
-
-@property --color-surface {
-	syntax: "<color>";
-	inherits: true;
-	initial-value: oklch(100% 0 0);
-}
-@property --color-surface-2 {
-	syntax: "<color>";
-	inherits: true;
-	initial-value: oklch(96% 0.008 170);
-}
-@property --color-line {
-	syntax: "<color>";
-	inherits: true;
-	initial-value: oklch(90% 0.01 250);
-}
-@property --color-accent-soft {
-	syntax: "<color>";
-	inherits: true;
-	initial-value: oklch(94% 0.05 170);
-}
-@property --color-accent-strong {
-	syntax: "<color>";
-	inherits: true;
-	initial-value: oklch(52% 0.12 170);
-}
-
 /* you could refactor below to use light-dark(), depending on your target audience */
 @theme {
 	--color-global-bg: oklch(98.5% 0.005 170);
@@ -123,24 +60,6 @@
 			--color-accent-strong: oklch(82% 0.15 170);
 			--shadow-card: 0 1px 2px oklch(0% 0 0 / 0.3), 0 12px 32px -16px oklch(0% 0 0 / 0.6);
 		}
-
-		--color-mode-transition-duration: 300ms;
-		--color-mode-transition-easing: ease-in-out;
-
-		transition:
-			--color-global-bg var(--color-mode-transition-duration) var(--color-mode-transition-easing),
-			--color-global-text var(--color-mode-transition-duration) var(--color-mode-transition-easing),
-			--color-muted var(--color-mode-transition-duration) var(--color-mode-transition-easing),
-			--color-link var(--color-mode-transition-duration) var(--color-mode-transition-easing),
-			--color-accent var(--color-mode-transition-duration) var(--color-mode-transition-easing),
-			--color-accent-2 var(--color-mode-transition-duration) var(--color-mode-transition-easing),
-			--color-quote var(--color-mode-transition-duration) var(--color-mode-transition-easing),
-			--color-surface var(--color-mode-transition-duration) var(--color-mode-transition-easing),
-			--color-surface-2 var(--color-mode-transition-duration) var(--color-mode-transition-easing),
-			--color-line var(--color-mode-transition-duration) var(--color-mode-transition-easing),
-			--color-accent-soft var(--color-mode-transition-duration) var(--color-mode-transition-easing),
-			--color-accent-strong var(--color-mode-transition-duration)
-			var(--color-mode-transition-easing);
 	}
 
 	:target,

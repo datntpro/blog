@@ -1,48 +1,71 @@
 {/* Inlined to avoid FOUC. This is a parser blocking script. */}
 <script is:inline>
-	const lightModePref = window.matchMedia("(prefers-color-scheme: light)");
-
-	function getUserPref() {
-		const storedTheme = typeof localStorage !== "undefined" && localStorage.getItem("theme");
-		return storedTheme || (lightModePref.matches ? "light" : "dark");
-	}
-
-	function setTheme(newTheme) {
-		if (newTheme !== "light" && newTheme !== "dark") {
-			return console.warn(
-				`Invalid theme value '${newTheme}' received. Expected 'light' or 'dark'.`,
-			);
-		}
-
+	(() => {
 		const root = document.documentElement;
+		const lightModePref = window.matchMedia("(prefers-color-scheme: light)");
 
-		// root already set to newTheme, exit early
-		if (newTheme === root.getAttribute("data-theme")) {
-			return;
+		// storage can throw (private mode, in-app webviews, blocked cookies): never let it kill the script
+		const store = {
+			get() {
+				try {
+					return localStorage.getItem("theme");
+				} catch {
+					return null;
+				}
+			},
+			set(value) {
+				try {
+					localStorage.setItem("theme", value);
+				} catch {}
+			},
+		};
+
+		function getUserPref() {
+			const stored = store.get();
+			return stored === "light" || stored === "dark"
+				? stored
+				: lightModePref.matches
+					? "light"
+					: "dark";
 		}
 
-		root.setAttribute("data-theme", newTheme);
-
-		if (typeof localStorage !== "undefined") {
-			localStorage.setItem("theme", newTheme);
+		// apply without persisting: used for the initial load and for OS / cross-tab changes
+		function apply(theme) {
+			if (theme !== "light" && theme !== "dark") return;
+			if (root.getAttribute("data-theme") !== theme) root.setAttribute("data-theme", theme);
+			root.classList.toggle("dark", theme === "dark");
+			root.style.colorScheme = theme;
+			document.dispatchEvent(new CustomEvent("theme-applied", { detail: { theme } }));
 		}
-	}
 
-	// initial setup
-	setTheme(getUserPref());
-
-	// listen for pageshow event, browser restored page from bfcache
-	window.addEventListener("pageshow", (e) => {
-		if (e.persisted) {
-			setTheme(getUserPref());
+		// explicit user choice: apply and persist
+		function setTheme(theme) {
+			if (theme !== "light" && theme !== "dark") {
+				return console.warn(`Invalid theme value '${theme}' received. Expected 'light' or 'dark'.`);
+			}
+			apply(theme);
+			store.set(theme);
 		}
-	});
 
-	// listen for theme-change custom event, fired in src/components/ThemeToggle.astro
-	document.addEventListener("theme-change", (e) => {
-		setTheme(e.detail.theme);
-	});
+		// initial setup
+		apply(getUserPref());
 
-	// listen for prefers-color-scheme change.
-	lightModePref.addEventListener("change", (e) => setTheme(e.matches ? "light" : "dark"));
+		// browser restored the page from bfcache
+		window.addEventListener("pageshow", (e) => {
+			if (e.persisted) apply(getUserPref());
+		});
+
+		// fired by src/components/ThemeToggle.astro and the home terminal
+		document.addEventListener("theme-change", (e) => setTheme(e.detail.theme));
+
+		// another tab changed the theme
+		window.addEventListener("storage", (e) => {
+			if (e.key === "theme") apply(getUserPref());
+		});
+
+		// OS preference changed, only follow it while the user has no saved choice
+		lightModePref.addEventListener("change", (e) => {
+			if (!store.get()) apply(e.matches ? "light" : "dark");
+		});
+	})();
 </script>

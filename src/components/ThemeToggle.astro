@@ -1,5 +1,5 @@
 <theme-toggle class="flex">
-	<button class="icon-btn relative" type="button">
+	<button class="icon-btn relative touch-manipulation" type="button">
 		<span class="sr-only">Dark Theme</span>
 		<svg
 			aria-hidden="true"
@@ -53,38 +53,39 @@
 </theme-toggle>
 
 <script>
-	// Note that if you fire the theme-change event outside of this component, it will not be reflected in the button's aria-checked attribute. You will need to add an event listener if you want that.
 	import { rootInDarkMode } from "@/utils/domElement";
 
 	class ThemeToggle extends HTMLElement {
-		constructor() {
-			super();
-			const button = this.querySelector<HTMLButtonElement>("button");
+		#button: HTMLButtonElement | null = null;
 
-			if (button) {
-				// set aria role value
-				button.setAttribute("role", "switch");
-				button.setAttribute("aria-checked", String(rootInDarkMode()));
+		#sync = () => {
+			this.#button?.setAttribute("aria-checked", String(rootInDarkMode()));
+		};
 
-				// button event
-				button.addEventListener("click", () => {
-					// invert theme
-					let themeChangeEvent = new CustomEvent("theme-change", {
-						detail: {
-							theme: rootInDarkMode() ? "light" : "dark",
-						},
-					});
-					// dispatch event -> ThemeProvider.astro
-					document.dispatchEvent(themeChangeEvent);
-
-					// set the aria-checked attribute
-					button.setAttribute("aria-checked", String(rootInDarkMode()));
-				});
-			} else {
-				console.warn("Theme Toggle: No button found");
-			}
+		// connectedCallback, not the constructor: children are not guaranteed to exist yet in the constructor
+		connectedCallback() {
+			this.#button = this.querySelector<HTMLButtonElement>("button");
+			if (!this.#button) return console.warn("Theme Toggle: No button found");
+			this.#button.setAttribute("role", "switch");
+			this.#sync();
+			this.#button.addEventListener("click", this.#onClick);
+			// the theme can also change from the terminal, another tab or the OS
+			document.addEventListener("theme-applied", this.#sync);
 		}
+
+		disconnectedCallback() {
+			this.#button?.removeEventListener("click", this.#onClick);
+			document.removeEventListener("theme-applied", this.#sync);
+		}
+
+		#onClick = () => {
+			// dispatch event -> ThemeProvider.astro, which applies and persists it
+			document.dispatchEvent(
+				new CustomEvent("theme-change", { detail: { theme: rootInDarkMode() ? "light" : "dark" } }),
+			);
+			this.#sync();
+		};
 	}
 
-	customElements.define("theme-toggle", ThemeToggle);
+	if (!customElements.get("theme-toggle")) customElements.define("theme-toggle", ThemeToggle);
 </script>
