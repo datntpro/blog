@@ -44,6 +44,8 @@ Mọi thứ chạy trên Orca, một môi trường quản lý nhiều agent Cla
 | navie | Đạo diễn, biên kịch | kênh video ngắn |
 | richard | Bộ não thứ 2 | gom kiến thức của cả nhóm vào wiki Obsidian |
 
+![Sơ đồ công ty một người với 5 AI agent: chủ giao mảng cho 5 bot, bot giao việc cho worker Opus–Sonnet, review rồi merge; richard gom ghi chép vào wiki Obsidian](/images/posts/so-do-cong-ty-mot-nguoi.svg)
+
 ### Bot điều phối, worker làm
 
 Bot không trực tiếp sửa code. Khi có việc, bot khởi động một **worker**: một phiên agent riêng, chạy trong một git worktree riêng, làm xong thì mở PR. Bot chỉ giữ phần điều phối:
