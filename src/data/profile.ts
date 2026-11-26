@@ -23,26 +23,30 @@ export const featuredVideo: { id: string; title: string } = { id: "", title: "" 
 export const roles = ["Security Engineer", "AppSec", "DevSecOps", "tool builder", "note-taker"];
 
 export const focusAreas: {
+	/** iconify name (Tabler set), e.g. "tabler:shield-check" */
 	icon: string;
 	title: string;
 	text: string;
 	/** posts with this tag are counted and linked */
 	tag: string;
+	/** link to a page instead of the tag page; shows the project count */
+	href?: string;
 }[] = [
 	{
-		icon: "🛡️",
+		icon: "tabler:shield-check",
 		tag: "appsec",
 		text: "Secure code review, threat modeling và tìm lỗi trước khi nó lên production.",
 		title: "Application Security",
 	},
 	{
-		icon: "⚙️",
+		icon: "tabler:infinity",
 		tag: "devsecops",
 		text: "Đưa security vào CI/CD sao cho dev không thấy phiền: tự động, nhanh, ít false positive.",
 		title: "DevSecOps",
 	},
 	{
-		icon: "🧰",
+		icon: "tabler:tools",
+		href: "/projects/",
 		tag: "tools",
 		text: "Build những công cụ nhỏ giải quyết vấn đề thật mình gặp hằng ngày.",
 		title: "Open source & tools",
